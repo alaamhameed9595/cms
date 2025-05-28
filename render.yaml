@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: laravel-app
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: php artisan serve --host=0.0.0.0 --port=8000
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        value: base64:nVrLAHfYzQNt0PrRIis1jbHRpoh2XgRxfWG0D1f7FxE=
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: mysql # IMPORTANT: this matches the service name below
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: laravel
+      - key: DB_USERNAME
+        value: laravel_user
+      - key: DB_PASSWORD
+        value: secretpassword
+
+  - type: private_service
+    name: mysql
+    env: docker
+    plan: free
+    dockerfilePath: mysql/Dockerfile
+    envVars:
+      - key: MYSQL_DATABASE
+        value: cms
+      - key: MYSQL_USER
+        value: laravel_user
+      - key: MYSQL_PASSWORD
+        value: secretpassword
+      - key: MYSQL_ROOT_PASSWORD
+        value: rootpassword

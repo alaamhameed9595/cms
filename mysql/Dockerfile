@@ -1,0 +1,8 @@
+FROM mysql:8.0
+
+ENV MYSQL_DATABASE=cms
+ENV MYSQL_USER=laravel_user
+ENV MYSQL_PASSWORD=secretpassword
+ENV MYSQL_ROOT_PASSWORD=rootpassword
+
+EXPOSE 3306
