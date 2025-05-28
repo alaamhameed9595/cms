@@ -1,4 +1,3 @@
-
 # Dockerfile
 FROM php:8.2-fpm
 
@@ -30,6 +29,9 @@ WORKDIR /var/www
 
 # Copy existing application directory contents
 COPY . /var/www
+
+# Install Composer dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Copy existing application directory permissions
 RUN chown -R www-data:www-data /var/www
