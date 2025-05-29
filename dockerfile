@@ -1,7 +1,6 @@
-# Dockerfile
 FROM php:8.2-fpm
 
-# Install system dependencies
+# تثبيت التبعيات الأساسية
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -21,24 +20,23 @@ RUN apt-get update && apt-get install -y \
     sqlite3 \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Install Composer
+# تثبيت Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# تعيين مجلد العمل
 WORKDIR /var/www
 
-# Copy existing application directory contents
+# نسخ ملفات المشروع إلى الحاوية
 COPY . /var/www
 
-# Install Composer dependencies
+# تثبيت اعتمادات Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Copy existing application directory permissions
-RUN chown -R www-data:www-data /var/www
+# تعيين صلاحيات الملفات
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Expose port 8000
-EXPOSE 8000
+# فتح بورت 10000
+EXPOSE 10000
 
-# Run Laravel dev server
-
-CMD php artisan migrate --force && php artisan serve --host 0.0.0.0 --port 10000
+# تشغيل المايجريشن ثم السيرفر على بورت 10000
+CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=10000
