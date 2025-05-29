@@ -31,6 +31,7 @@ COPY . /var/www
 
 # تثبيت اعتمادات Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN composer dump-autoload -o
 
 # تعيين صلاحيات الملفات
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache

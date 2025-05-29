@@ -12,7 +12,7 @@ class Post extends Model
 
     protected $fillable = [
         'title',
-        'content',
+        'description',
         'excerpt',
         'featured_image',
         'status',
@@ -21,6 +21,7 @@ class Post extends Model
         'seo_description',
         'user_id',
         'category_id',
+        'gallery_id'
     ];
 
     protected $casts = [
@@ -60,7 +61,7 @@ class Post extends Model
 
     public function getReadTimeAttribute()
     {
-        $words = str_word_count(strip_tags($this->content));
+        $words = str_word_count(strip_tags($this->description));
         $minutes = ceil($words / 200);
         return $minutes . ' min read';
     }
