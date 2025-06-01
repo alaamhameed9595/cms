@@ -1,6 +1,0 @@
-services:
-  - type: private_service
-    name: mysql
-    env: docker
-    plan: free
-    dockerfilePath: Dockerfile
