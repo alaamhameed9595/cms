@@ -64,14 +64,50 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $users = User::count();
-        if ($users < 1)
-            $role = 'admin';
-        else
-            $role = 'guest';
-        return User::create([
+        $admin = false;
+        if ($users < 1) {
+            $admin = true;
+        }
+
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+        if ($admin) {
+            $user->assignRole('admin');
+            $user->givePermissionTo([
+                'create posts',
+                'edit posts',
+                'delete posts',
+                'create categories',
+                'edit categories',
+                'delete categories',
+                'view statistics',
+                'publish posts',
+                'unpublish posts',
+                'create pages',
+                'edit pages',
+                'delete pages',
+                'manage users',
+            ]);
+        } elseif ($users < 2) {
+            $user->assignRole('editor');
+            $user->givePermissionTo([
+                'create posts',
+                'edit posts',
+                'delete posts',
+                'publish posts',
+                'unpublish posts',
+                'create pages',
+                'edit pages',
+            ]);
+        } else {
+            $user->assignRole('author');
+            $user->givePermissionTo([
+                'create posts',
+                'edit posts',
+            ]);
+        }
     }
 }

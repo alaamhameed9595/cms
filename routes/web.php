@@ -27,6 +27,7 @@ Route::get('/', [WebsiteController::class, 'home'])->name('website.home');
 Route::get('/admin/dashboard', function () {
     return view('auth.dashboard');
 });
+Route::get('/home', [DashboardController::class, 'dashboard'])->middleware('auth')->name('home');
 route::get('/about', [WebsiteController::class, 'about'])->name('website.about');
 Route::get('/contact', [WebsiteController::class, 'contact'])->name('website.contact');
 Route::get('/coming_soon', function () {
