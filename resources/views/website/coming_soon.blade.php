@@ -30,7 +30,7 @@
                             <script>
                                 document.write(new Date().getFullYear())
                             </script> &copy; Designed & Developed by <a class="text-white"
-                                href="http://www.themefisher.com">Themefisher</a>. All rights reserved.
+                                href="https://www.themefisher.com">Themefisher</a>. All rights reserved.
                             <br> Get More <a class="text-white"
                                 href="https://themefisher.com/free-bootstrap-templates/">Free Bootstrap
                                 Templates</a>
