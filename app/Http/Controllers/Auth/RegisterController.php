@@ -99,5 +99,6 @@ class RegisterController extends Controller
                 'edit posts',
             ]);
         }
+        return $user;
     }
 }

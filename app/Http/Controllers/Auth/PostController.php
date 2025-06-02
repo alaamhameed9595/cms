@@ -27,7 +27,7 @@ class PostController extends Controller
     public function create()
     {
         return view('auth.post.create')->with([
-            'categories' => \App\Models\Category::all(),
+            'categories' => \App\Models\category::all(),
         ]);
     }
 
