@@ -87,6 +87,6 @@ class Post extends Model
     }
     public function gallery()
     {
-        return $this->belongsTo(Gallery::class);
+        return $this->belongsTo(gallery::class);
     }
 }
