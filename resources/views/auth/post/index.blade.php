@@ -52,8 +52,8 @@
                                                 <td>{{ $post->created_at }}</td>
                                                 <td>
                                                     @isset($post->gallery)
-                                                        <img src="{{ asset('storage/' . $post->getImageUrlAttribute()) }}"
-                                                            alt="Image" style="width: 50px; height: 50px;">
+                                                        <img src="{{ $post->getImageUrlAttribute() }}" alt="Image"
+                                                            style="width: 50px; height: 50px;">
                                                     @endisset($post->images)
 
 

@@ -59,8 +59,7 @@
                                 <label for="image">Image</label>
                                 <div class="image-container">
                                     @if ($post->gallery)
-                                        <img src="{{ asset('storage/' . $post->getImageUrlAttribute()) }}" alt="Post Image"
-                                            class="img-fluid">
+                                        <img src="{{ $post->getImageUrlAttribute() }}" alt="Post Image" class="img-fluid">
                                     @else
                                         <p>No image available</p>
                                     @endif

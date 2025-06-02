@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\Request\CreateRequest;
 use App\Models\Post;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ConditionalRules;
@@ -42,12 +43,13 @@ class PostController extends Controller
             $gallery = null;
             if ($request->hasFile('file')) {
                 $image = $request->file('file');
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $imagePath = $image->storeAs('uploads', $imageName, 'public');
-
+                //$imageName = time() . '_' . $image->getClientOriginalName();
+                $uploadedFileUrl = Cloudinary::upload($image->getRealPath(), [
+                    'folder' => 'posts'
+                ])->getSecurePath();
                 // Optionally, save to gallery table
                 $gallery = \App\Models\gallery::create([
-                    'image' => $imagePath,
+                    'image' => $uploadedFileUrl,
                 ]);
             }
             $post = new Post();
@@ -110,9 +112,10 @@ class PostController extends Controller
         try {
             if ($request->hasFile('file')) {
                 $image = $request->file('file');
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $imagePath = $image->storeAs('uploads', $imageName, 'public');
-                $gallery = \App\Models\gallery::create(['image' => $imagePath]);
+                $uploadedFileUrl = Cloudinary::upload($image->getRealPath(), [
+                    'folder' => 'posts'
+                ])->getSecurePath();
+                $gallery = \App\Models\gallery::create(['image' => $uploadedFileUrl]);
                 $post->gallery_id = $gallery->id;
             }
             $post->title = $request->input('title') ?? $post->title;

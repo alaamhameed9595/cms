@@ -72,7 +72,7 @@
                                     <label for="gallery_id">File upload</label>
                                     @if (isset($post->gallery) && $post->gallery->image)
                                         <div class="mb-2">
-                                            <img src="{{ asset('storage/' . $post->gallery->image) }}" alt="Current Image"
+                                            <img src="{{ $post->gallery->image }}" alt="Current Image"
                                                 style="width: 100px; height: 100px; object-fit:cover;">
                                         </div>
                                     @endif
