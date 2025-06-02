@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -75,21 +76,10 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
         if ($admin) {
-            $user->assignRole('admin');
-            $user->givePermissionTo([
-                'create posts',
-                'edit posts',
-                'delete posts',
-                'create categories',
-                'edit categories',
-                'delete categories',
-                'view statistics',
-                'publish posts',
-                'unpublish posts',
-                'create pages',
-                'edit pages',
-                'delete pages',
-                'manage users',
+            Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('db:seed', [
+                '--class' => 'RolesAndPermissionsSeeder',
+                '--force' => true,
             ]);
         } elseif ($users < 2) {
             $user->assignRole('editor');
