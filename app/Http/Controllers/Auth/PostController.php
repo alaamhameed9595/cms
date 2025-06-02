@@ -89,7 +89,7 @@ class PostController extends Controller
     public function edit(string $id)
     {
         $post = Post::findOrFail($id);
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\category::all();
         return view('auth.post.edit', compact('post', 'categories'));
     }
 
