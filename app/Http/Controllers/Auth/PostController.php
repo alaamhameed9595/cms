@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\Request\CreateRequest;
+use App\Models\gallery;
 use App\Models\Post;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Cloudinary\Api\Upload\UploadApi;
+use Cloudinary\Configuration\Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ConditionalRules;
@@ -17,6 +19,8 @@ class PostController extends Controller
      */
     public function index()
     {
+        //dd(config('cloudinary.cloudinary_url'));
+
         return view('auth.post.index')->with([
             'posts' => $posts = Post::with('category')->get(),
         ]);
@@ -37,34 +41,33 @@ class PostController extends Controller
      */
     public function store(CreateRequest $request)
     {
-        DB::beginTransaction();
-        try {
-            $validatedData = $request->validated();
-            $gallery = null;
-            if ($request->hasFile('file')) {
-                $image = $request->file('file');
-                //$imageName = time() . '_' . $image->getClientOriginalName();
-                $uploadedFileUrl = Cloudinary::upload($image->getRealPath(), [
-                    'folder' => 'posts'
-                ])->getSecurePath();
-                // Optionally, save to gallery table
-                $gallery = \App\Models\gallery::create([
-                    'image' => $uploadedFileUrl,
-                ]);
+        $validatedData = $request->validated();
+        //dd($request->all());
+
+
+
+        $post = new Post();
+        $post->title = $request->input('title');
+        $post->description = $request->input('description');
+        if ($request->hasFile('file')) {
+            if (!$request->file('file')->isValid()) {
+                abort(400, 'Invalid upload');
             }
-            $post = new Post();
-            $post->title = $request->input('title');
-            $post->description = $request->input('description');
+            $image = $request->file('file');
+            $cloudinaryImage = (new UploadApi())->upload($image->getRealPath(), [
+                'folder' => 'posts'
+            ])['secure_url'];
+            // Optionally, save to gallery table
+            $gallery = \App\Models\gallery::create([
+                'image' => $cloudinaryImage,
+            ]);
             $post->gallery_id = $gallery->id; // Use the gallery ID if it was created
-            $post->category_id = $request->input('category_id');
-            $post->is_published = $request->input('is_published', false);
-            $post->save();
-            DB::commit();
-            return redirect()->route('auth.posts')->with(['success', 'Post created successfully!']);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('errors', 'Validation failed: ' . $e->getMessage());
         }
+
+        $post->category_id = $request->input('category_id');
+        $post->is_published = $request->input('is_published', false);
+        $post->save();
+        return redirect()->route('auth.posts')->with(['success', 'Post created successfully!']);
     }
 
     /**
@@ -101,7 +104,6 @@ class PostController extends Controller
     public function update(Request $request, string $id)
     {
         $post = Post::findOrFail($id);
-        DB::beginTransaction();
         $request->validate([
             'title' => 'string|max:255',
             'description' => 'min:10|string',
@@ -109,26 +111,27 @@ class PostController extends Controller
             'is_published' => 'boolean',
             'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-        try {
-            if ($request->hasFile('file')) {
-                $image = $request->file('file');
-                $uploadedFileUrl = Cloudinary::upload($image->getRealPath(), [
-                    'folder' => 'posts'
-                ])->getSecurePath();
-                $gallery = \App\Models\gallery::create(['image' => $uploadedFileUrl]);
-                $post->gallery_id = $gallery->id;
-            }
-            $post->title = $request->input('title') ?? $post->title;
-            $post->description = $request->input('description') ??  $post->description;
-            $post->category_id = $request->input('category_id') ?? $post->category_id;
-            $post->is_published = $request->input('is_published') ?? $post->is_published;
-            $post->save();
-            DB::commit();
-            return redirect()->route('auth.posts')->with('success', 'Post updated successfully!');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'Update failed: ' . $e->getMessage());
+
+        if ($request->hasFile('file')) {
+            $image = $request->file('file');
+            $cloudinaryImage = (new UploadApi())->upload($image->getRealPath(), [
+                'folder' => 'posts'
+            ])['secure_url'];
+            $gallery = gallery::findorFail($post->gallery_id);
+            if (!$gallery) {
+                $gallery = new gallery();
+                $gallery->image = $cloudinaryImage;
+            } else
+                $gallery->image = $cloudinaryImage;
+            $gallery->save();
+            $post->gallery_id = $gallery->id;
         }
+        $post->title = $request->input('title') ?? $post->title;
+        $post->description = $request->input('description') ??  $post->description;
+        $post->category_id = $request->input('category_id') ?? $post->category_id;
+        $post->is_published = $request->input('is_published') ?? $post->is_published;
+        $post->save();
+        return redirect()->route('auth.posts')->with('success', 'Post updated successfully!');
     }
     /**
      * Remove the specified resource from storage.

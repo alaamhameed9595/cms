@@ -34,6 +34,8 @@ WORKDIR /var/www
 # Copy existing app
 COPY . /var/www
 
+RUN apt-get update && apt-get install -y ca-certificates
+
 RUN composer install
 
 CMD php artisan serve --host=0.0.0.0 --port=8000

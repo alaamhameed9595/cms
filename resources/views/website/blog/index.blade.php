@@ -26,8 +26,7 @@
                             <div class="post">
                                 <div class="post-thumb">
                                     <a href="{{ route('website.post.show', $post->id) }}">
-                                        <img class="img-fluid" src="{{ asset('storage/' . $post->getImageUrlAttribute()) }}"
-                                            alt="">
+                                        <img class="img-fluid" src="{{ $post->getImageUrlAttribute() }}" alt="">
                                     </a>
                                 </div>
                                 <h3 class="post-title"><a
@@ -68,8 +67,7 @@
                                     @foreach ($latestPosts as $post)
                                         <div class="media">
                                             <a class="pull-left" href="{{ route('website.post.show', $post->id) }}">
-                                                <img class="media-object"
-                                                    src="{{ asset('storage/' . $post->getImageUrlAttribute()) }}"
+                                                <img class="media-object" src="{{ $post->getImageUrlAttribute() }}"
                                                     alt="Image">
                                             </a>
                                             <div class="media-body">

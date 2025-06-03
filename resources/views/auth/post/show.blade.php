@@ -59,6 +59,7 @@
                                 <label for="image">Image</label>
                                 <div class="image-container">
                                     @if ($post->gallery)
+                                        <x-cloudinary::image public-id="example" />
                                         <img src="{{ $post->getImageUrlAttribute() }}" alt="Post Image" class="img-fluid">
                                     @else
                                         <p>No image available</p>

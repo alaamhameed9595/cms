@@ -36,8 +36,7 @@
                             </ul>
                         </div>
                         <div class="post-thumb">
-                            <img class="img-fluid" src="{{ asset('storage/' . $post->getImageUrlAttribute()) }}"
-                                alt="">
+                            <img class="img-fluid" src="{{ $post->getImageUrlAttribute() }}" alt="">
                         </div>
                         <div class="post-content post-excerpt">
                             <p>{!! $post->description !!}</p>
