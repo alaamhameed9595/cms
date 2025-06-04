@@ -22,177 +22,84 @@
                 <div class="col-md-12">
                     <div class="post post-single">
                         <h2 class="post-title">{{ $post->title }}</h2>
-                        <div class="post-meta">
-                            <ul>
-                                <li>
-                                    <i class="ion-calendar"></i> {{ $post->created_at->format('d, M Y') }}
+                        <div class="post-meta mb-3">
+                            <ul class="list-inline mb-0">
+                                <li class="list-inline-item mr-4 align-middle">
+                                    <i class="ion-calendar text-primary"></i>
+                                    <span class="text-secondary small">{{ $post->created_at->diffForHumans() }}</span>
                                 </li>
-                                <li>
-                                    <a href="{{ route('website.category', $post->category_id) }}"><i
-                                            class="ion-pricetags"></i>
-                                        {{ $post->category->name }}</a>
+                                <li class="list-inline-item align-middle">
+                                    <a href="{{ route('website.category', $post->category_id) }}"
+                                        class="text-decoration-none">
+                                        <i class="ion-pricetags text-success"></i>
+                                        <span class="text-secondary small">{{ $post->category->name }}</span>
+                                    </a>
                                 </li>
-
                             </ul>
                         </div>
-                        <div class="post-thumb">
-                            <img class="img-fluid" src="{{ $post->getImageUrlAttribute() }}" alt="">
+                        <div class="post-thumb mb-4">
+                            <img class="img-fluid rounded shadow-sm" style="max-height:400px;object-fit:cover;"
+                                src="{{ $post->getImageUrlAttribute() }}" alt="">
                         </div>
-                        <div class="post-content post-excerpt">
-                            <p>{!! $post->description !!}</p>
-
+                        <div class="post-content post-excerpt mb-4">
+                            <p class="lead">{!! $post->description !!}</p>
                         </div>
                         <div class="post-comments">
-                            <h3 class="post-sub-heading">10 Comments</h3>
-                            <ul class="media-list comments-list m-bot-50 clearlist">
-                                <!-- Comment Item start-->
-                                <li class="media">
-                                    <a class="pull-left" href="#!">
-                                        <img class="media-object comment-avatar rounded-circle"
-                                            src="{{ asset('assets/website/images/blog/avater-1.jpg') }}" alt=""
-                                            width="50" height="50">
-                                    </a>
-                                    <div class="media-body">
-                                        <div class="comment-info">
-                                            <h4 class="comment-author">
-                                                <a href="#!">Jonathon Andrew</a>
-                                            </h4>
-                                            <time>July 02, 2020, at 11:34</time>
-                                            <a class="comment-button" href="#!"><i
-                                                    class="tf-ion-chatbubbles"></i>Reply</a>
-                                        </div>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at magna ut
-                                            ante eleifend eleifend.
-                                        </p>
-                                        <!--  second level Comment start-->
-                                        <div class="media">
-                                            <a class="pull-left" href="#!">
-                                                <img class="media-object comment-avatar rounded-circle"
-                                                    src="{{ asset('assets/website/images/blog/avater-2.jpg') }}"
-                                                    alt="" width="50" height="50">
-                                            </a>
-                                            <div class="media-body">
-                                                <div class="comment-info">
-                                                    <h4 class="comment-author">
-                                                        <a href="#!">Senorita</a>
-                                                    </h4>
-                                                    <time>July 02, 2020, at 11:34</time>
-                                                    <a class="comment-button" href="#!"><i
-                                                            class="tf-ion-chatbubbles"></i>Reply</a>
-                                                </div>
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at
-                                                    magna ut ante eleifend eleifend.
-                                                </p>
-                                                <!-- third level Comment start -->
-                                                <div class="media">
-                                                    <a class="pull-left" href="#!">
-                                                        <img class="media-object comment-avatar rounded-circle"
-                                                            src="{{ asset('assets/website/images/blog/avater-3.jpg') }}"
-                                                            alt="" width="50" height="50">
-                                                    </a>
-                                                    <div class="media-body">
-                                                        <div class="comment-info">
-                                                            <h4 class="comment-author">
-                                                                <a href="#!">Senorita</a>
-                                                            </h4>
-                                                            <time>July 02, 2020, at 11:34</time>
-                                                            <a class="comment-button" href="#!"><i
-                                                                    class="tf-ion-chatbubbles"></i>Reply</a>
-                                                        </div>
-                                                        <p>
-                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-                                                            at magna ut ante eleifend eleifend.
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <!-- third level Comment end -->
-                                            </div>
-                                        </div>
-                                        <!-- second level Comment end -->
-                                    </div>
-                                </li>
-                                <!-- End Comment Item -->
+                            @if ($post->comments() && $post->comments()->count() > 0)
+                                <h5 class="d-flex align-items-center gap-2 text-muted">
+                                    <i class="bi bi-chat-left-text-fill fs-5 text-primary"></i>
+                                    <span>{{ $post->approvedComments()->count() }} Comments</span>
+                                </h5>
+                                <ul class="media-list comments-list m-bot-50 clearlist">
+                                    @include('website.blog.comments.partials', [
+                                        'post' => $post,
+                                        'comments' => $post->approvedComments()->whereNull('parent_id')->get(),
+                                    ])
 
-                                <!-- Comment Item start-->
-                                <li class="media">
-                                    <a class="pull-left" href="#!">
-                                        <img class="media-object comment-avatar rounded-circle"
-                                            src="{{ asset('assets/website/images/blog/avater-4.jpg') }}" alt=""
-                                            width="50" height="50">
-                                    </a>
-                                    <div class="media-body">
-                                        <div class="comment-info">
-                                            <h4 class="comment-author">
-                                                <a href="#!">Jonathon Andrew</a>
-                                            </h4>
-                                            <time>July 02, 2020, at 11:34</time>
-                                            <a class="comment-button" href="#!"><i
-                                                    class="tf-ion-chatbubbles"></i>Reply</a>
-                                        </div>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at magna ut
-                                            ante eleifend eleifend.
-                                        </p>
-                                    </div>
-                                </li>
-                                <!-- End Comment Item -->
-
-                                <!-- Comment Item start-->
-                                <li class="media">
-                                    <a class="pull-left" href="#!">
-                                        <img class="media-object comment-avatar rounded-circle"
-                                            src="{{ asset('assets/website/images/blog/avater-1.jpg') }}" alt=""
-                                            width="50" height="50">
-                                    </a>
-                                    <div class="media-body">
-                                        <div class="comment-info">
-                                            <h4 class="comment-author">
-                                                <a href="#!">Jonathon Andrew</a>
-                                            </h4>
-                                            <time>July 02, 2020, at 11:34</time>
-                                            <a class="comment-button" href="#!"><i
-                                                    class="tf-ion-chatbubbles"></i>Reply</a>
-                                        </div>
-                                        <p>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at magna ut
-                                            ante eleifend eleifend.
-                                        </p>
-                                    </div>
-                                </li>
-                                <!-- End Comment Item -->
-                            </ul>
+                                </ul>
+                            @else
+                                <h3 class="post-sub-heading">No Comments Yet</h3>
+                                <p>Be the first to comment on this post!</p>
+                                @endelse
+                            @endif
                         </div>
-                        <div class="post-comments-form">
-                            <h3 class="post-sub-heading">Leave You Comments</h3>
-                            <form method="post" action="#!" id="form" role="form">
-                                <div class="row">
-                                    <div class="col-md-6 form-group">
-                                        <!-- Name -->
-                                        <input type="text" name="name" id="name" class=" form-control"
-                                            placeholder="Name *" maxlength="100" required="">
+                        <div class="post-comments-form mt-5">
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            <form action="{{ route('comments.store', $post->id) }}" method="POST"
+                                class="bg-light p-3 rounded shadow-sm">
+                                @csrf
+                                <div class="form-row align-items-center">
+                                    <div class="col-md-4 mb-2">
+                                        <input type="text" name="name" id="name"
+                                            class="form-control form-control-sm" placeholder="Name *" maxlength="100"
+                                            required>
                                     </div>
-                                    <div class="col-md-6 form-group">
-                                        <!-- Email -->
-                                        <input type="email" name="email" id="email" class=" form-control"
-                                            placeholder="Email *" maxlength="100" required="">
+                                    <div class="col-md-4 mb-2">
+                                        <input type="email" name="email" id="email"
+                                            class="form-control form-control-sm" placeholder="Email *" maxlength="100"
+                                            required>
                                     </div>
-                                    <div class="form-group col-md-12">
-                                        <!-- Website -->
-                                        <input type="text" name="website" id="website" class=" form-control"
-                                            placeholder="Website" maxlength="100">
+                                    <div class="col-md-4 mb-2">
+                                        <input type="text" name="website" id="website"
+                                            class="form-control form-control-sm" placeholder="Website" maxlength="100">
                                     </div>
-                                    <!-- Comment -->
-                                    <div class="form-group col-md-12">
-                                        <textarea name="text" id="text" class=" form-control" rows="6" placeholder="Comment"
-                                            maxlength="400"></textarea>
+                                    <div class="col-md-12 mb-2">
+                                        <textarea name="body" id="body" class="form-control form-control-sm" rows="3"
+                                            placeholder="Write a public comment..." maxlength="400" required style="resize:none;"></textarea>
                                     </div>
-                                    <!-- Send Button -->
-                                    <div class="form-group col-md-12">
-                                        <button type="submit" class="btn btn-main ">
-                                            Send comment
-                                        </button>
+                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                    <input type="hidden" name="parent_id" value="">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-light border px-4 text-primary"
+                                            style="font-weight:500;">Comment</button>
                                     </div>
                                 </div>
                             </form>

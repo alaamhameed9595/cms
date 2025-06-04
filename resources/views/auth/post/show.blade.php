@@ -27,44 +27,66 @@
                             </div>
                         @endif
                         <div class="card-body">
-
-                            <div class="form-group">
-                                <label for="exampleInputName1">Title</label>
-                                <input type="text" class="form-control" id="exampleInputName1" name="title"
-                                    value="{{ old('title', $post->title ?? '') }}" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleSelectCategory">Category</label>
-                                <h6 class="form-control" id="exampleSelectCategory">
-                                    {{ $post->category->name ?? 'No Category' }}
-                                </h6>
-                            </div>
-                            <div class="form-group">
-                                <label for="summernote">Description</label>
-                                <div class="form-control" style="min-height:120px; background:#f8f9fa;">
-                                    {!! $post->description !!}
+                            <div class="row align-items-stretch">
+                                <div class="col-md-4 mb-4 mb-md-0">
+                                    <!-- Image -->
+                                    <div class="image-preview h-100 d-flex align-items-center">
+                                        <div
+                                            class="image-container border rounded p-2 bg-light text-center shadow-sm w-100">
+                                            @if ($post->gallery)
+                                                <img src="{{ $post->getImageUrlAttribute() }}" alt="Post Image"
+                                                    class="img-fluid rounded shadow"
+                                                    style="max-height:200px;object-fit:cover;">
+                                            @else
+                                                <p class="text-muted" style="font-size:1rem;">No image available</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <!-- Title -->
+                                    <div class="form-group mb-4">
+                                        <label class="font-weight-bold text-secondary" style="font-size:1rem;">Title</label>
+                                        <div class="form-control-plaintext border-bottom pb-2 pl-0 mb-0 text-dark"
+                                            style="font-size:1.1rem;">{{ $post->title }}</div>
+                                    </div>
+                                    <!-- Category -->
+                                    <div class="form-group mb-4">
+                                        <label class="font-weight-bold text-secondary"
+                                            style="font-size:1rem;">Category</label>
+                                        <div class="form-control-plaintext border-bottom pb-2 pl-0 text-info font-italic"
+                                            style="font-size:1.1rem;">{{ $post->category->name ?? 'No Category' }}</div>
+                                    </div>
+                                    <!-- Description -->
+                                    <div class="form-group mb-4">
+                                        <label class="font-weight-bold text-secondary"
+                                            style="font-size:1rem;">Description</label>
+                                        <div class="form-control-plaintext border-bottom pb-2 pl-0 bg-light text-dark rounded shadow-sm"
+                                            style="min-height:120px;font-size:1.1rem;">{!! $post->description !!}</div>
+                                    </div>
+                                    <!-- Status -->
+                                    <div class="form-group mb-4">
+                                        <label class="font-weight-bold text-secondary"
+                                            style="font-size:1rem;">Status</label>
+                                        <span class="badge badge-{{ $post->is_published ? 'success' : 'warning' }} ">
+                                            {{ $post->is_published ? 'Published' : 'Draft' }} </span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleSelectPublish">Status</label>
-                                <select class="form-select" id="exampleSelectPublish" name="is_published" disabled>
-                                    <option disabled>Choose a Status</option>
-                                    <option value="1" @selected(old('is_published', $post->is_published ?? '') == 1)>Publish
-                                    </option>
-                                    <option value="0" @selected(old('is_published', $post->is_published ?? '') == 0)>Draft
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="image-preview">
-                                <label for="image">Image</label>
-                                <div class="image-container">
-                                    @if ($post->gallery)
-                                        <x-cloudinary::image public-id="example" />
-                                        <img src="{{ $post->getImageUrlAttribute() }}" alt="Post Image" class="img-fluid">
-                                    @else
-                                        <p>No image available</p>
-                                    @endif
-                                </div>
+                            <hr>
+                            <div>
+                                <h5 class="font-weight-bold mb-3 text-secondary" style="font-size:1.1rem;">Comments</h5>
+                                @if ($post->comments && $post->comments->count())
+                                    <div class="row">
+                                        @include('auth.post.comments.partials', [
+                                            'post' => $post,
+                                            'comments' => $post->comments->whereNull('parent_id'),
+                                            'isAdmin' => true,
+                                        ])
+                                    </div>
+                                @else
+                                    <p class="text-muted" style="font-size:1rem;">No comments for this post.</p>
+                                @endif
                             </div>
                         </div>
                     </div>

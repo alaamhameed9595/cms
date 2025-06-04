@@ -1,12 +1,14 @@
 <?php
 
+use App\Http\Controllers\Auth\CategoryController;
 use App\Http\Controllers\Auth\DashboardController;
 use App\Http\Controllers\Auth\PostController;
-use App\Http\Controllers\Auth\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\WebsiteController;
 use Carbon\Laravel\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -47,6 +49,11 @@ Route::get('/blog/category/{category}', [WebsiteController::class, 'category'])-
 Route::get('/portfolio', [WebsiteController::class, 'portfolio'])->name('website.portfolio');
 Route::get('/portfolio/single', [WebsiteController::class, 'portfolioSingle'])->name('website.portfolio_single');
 
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+
+Route::patch('/comments/{id}/approve', [CommentController::class, 'approve'])->name('comments.approve')->middleware('auth');
+Route::patch('/comments/{id}/reject', [CommentController::class, 'reject'])->name('comments.reject')->middleware('auth');
+Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy')->middleware('auth');
 Auth::routes();
 
 Route::get('/auth/dashboard', [DashboardController::class, 'dashboard'])->name('auth.dashboard')->middleware('auth');

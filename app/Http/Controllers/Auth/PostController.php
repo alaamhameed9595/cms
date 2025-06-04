@@ -142,4 +142,20 @@ class PostController extends Controller
         $post->delete();
         return redirect()->route('auth.posts')->with('success', 'Post deleted successfully!');
     }
+
+    public function acceptComment($commentId)
+    {
+        $comment = \App\Models\Comment::findOrFail($commentId);
+        $comment->is_approved = true;
+        $comment->save();
+        return redirect()->back()->with('success', 'Comment accepted!');
+    }
+
+    public function rejectComment($commentId)
+    {
+        $comment = \App\Models\Comment::findOrFail($commentId);
+        $comment->is_approved = false;
+        $comment->save();
+        return redirect()->back()->with('success', 'Comment rejected!');
+    }
 }
