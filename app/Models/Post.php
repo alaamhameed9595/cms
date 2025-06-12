@@ -5,11 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 
 class Post extends Model
 {
     use HasFactory;
+    use Searchable;
 
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => strip_tags($this->description),
+        ];
+    }
     protected $fillable = [
         'title',
         'description',
@@ -38,10 +48,6 @@ class Post extends Model
         return $this->belongsTo(category::class);
     }
 
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
-    }
 
     public function setTitleAttribute($value)
     {
@@ -96,5 +102,26 @@ class Post extends Model
     public function approvedComments()
     {
         return $this->hasMany(Comment::class)->where('is_approved', true);
+    }
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+    /*
+    public function toSearchableArray()
+    {
+        return [
+            'title' => $this->normalizeArabic($this->title),
+            'content' => $this->normalizeArabic($this->description),
+        ];
+    }*/
+
+    private function normalizeArabic($text)
+    {
+        return preg_replace('/(ال)/u', '', $text); // أو طرق أدق حسب الحاجة
     }
 }

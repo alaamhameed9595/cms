@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Notifications\NewCommentNotification;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -19,6 +21,12 @@ class CommentController extends Controller
             'body' => 'required|string|max:2000',
             // 'g-recaptcha-response' => 'required|captcha',
         ]);
+        if ($request->parent_id != null) {
+            $status = true;
+            // Update the timestamp of the parent comment
+        } else {
+            $status = false;
+        }
         $comment = Comment::create([
             'post_id' => $request->post_id,
             'parent_id' => $request->parent_id,
@@ -26,9 +34,14 @@ class CommentController extends Controller
             'email' => $request->email,
             'website' => $request->website,
             'body' => $request->body,
-            'is_approved' => false, // moderation
+            'is_approved' => $status, // moderation
         ]);
-
+        $admin = User::where('email', config('app.admin_email'))->first();
+        $comment->updated_at = now()->addSecond();
+        $comment->save();
+        if ($admin) {
+            $admin->notify(new NewCommentNotification($comment));
+        }
         return back()->with('success', 'Comment submitted and waiting for approval!');
     }
 

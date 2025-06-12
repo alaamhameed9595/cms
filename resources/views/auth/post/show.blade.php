@@ -71,6 +71,16 @@
                                         <span class="badge badge-{{ $post->is_published ? 'success' : 'warning' }} ">
                                             {{ $post->is_published ? 'Published' : 'Draft' }} </span>
                                     </div>
+                                    @if ($post->tags && $post->tags->count() > 0)
+
+                                        <div class="form-group mb-4">
+                                            @foreach ($post->tags as $tag)
+                                                <a href="{{ route('auth.tag.posts', $tag->slug) }}"
+                                                    class="badge bg-primary text-white">#{{ $tag->name }}</a>
+                                            @endforeach
+
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <hr>

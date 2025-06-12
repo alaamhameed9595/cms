@@ -36,13 +36,13 @@
                 <textarea name="body" required placeholder="Write a reply..." class="form-control form-control-sm mb-2"></textarea>
                 <button type="submit" class="btn btn-primary btn-sm">Reply</button>
             </form>
-            @if ($comment->approvedReplies && $comment->approvedReplies->count())
-                <button class="btn btn-link btn-sm p-0 text-secondary toggle-replies-btn" type="button"
-                    data-target="#replies-{{ $comment->id }}">
-                    <span id="toggle-text-{{ $comment->id }}">See replies
-                        ({{ $comment->approvedReplies->count() }})</span>
+            @if ($comment->approvedReplies && $comment->approvedReplies->count() > 0)
+                <button class="btn btn-link btn-sm mt-3" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#replies-{{ $comment->id }}" aria-expanded="false"
+                    aria-controls="replies-{{ $comment->id }}">
+                    <span class="text-primary">Show/Hide Replies ({{ $comment->approvedReplies->count() }})</span>
                 </button>
-                <ul class="list-unstyled ml-5 mt-3 d-none" id="replies-{{ $comment->id }}">
+                <ul class="list-unstyled ml-5 mt-3 collapse" id="replies-{{ $comment->id }}">
                     @include('website.blog.comments.partials', ['comments' => $comment->approvedReplies])
                 </ul>
             @endif
@@ -50,28 +50,9 @@
     </li>
 @endforeach
 <script>
+    // Only keep the reply form toggle, remove any JS for replies collapse
     function toggleReplyForm(id) {
         let form = document.getElementById('reply-form-' + id);
         if (form) form.classList.toggle('d-none');
     }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.toggle-replies-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var targetId = btn.getAttribute('data-target');
-                var replies = document.querySelector(targetId);
-                var text = document.getElementById('toggle-text-' + targetId.replace(
-                    '#replies-', ''));
-                if (replies) {
-                    replies.classList.toggle('d-none');
-                    if (replies.classList.contains('d-none')) {
-                        text.textContent = text.textContent.replace('Hide replies',
-                            'See replies');
-                    } else {
-                        text.textContent = text.textContent.replace('See replies',
-                            'Hide replies');
-                    }
-                }
-            });
-        });
-    });
 </script>

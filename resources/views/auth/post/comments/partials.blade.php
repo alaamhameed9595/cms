@@ -43,9 +43,9 @@
                         </form>
                     </div>
                 </div>
-                @if ($comment->replies && $comment->replies->count())
-                    <button class="btn btn-link btn-sm mt-3 toggle-replies" type="button" data-toggle="collapse"
-                        data-target="#replies-{{ $comment->id }}" aria-expanded="false"
+                @if ($comment->replies && $comment->replies->count() > 0)
+                    <button class="btn btn-link btn-sm mt-3 toggle-replies" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#replies-{{ $comment->id }}" aria-expanded="false"
                         aria-controls="replies-{{ $comment->id }}">
                         <span class="text-primary">Show/Hide Replies ({{ $comment->replies->count() }})</span>
                     </button>

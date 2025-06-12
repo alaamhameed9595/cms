@@ -13,7 +13,6 @@ class Tag extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description'
     ];
 
     public function posts()
@@ -26,4 +25,4 @@ class Tag extends Model
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = Str::slug($value);
     }
-} 
+}

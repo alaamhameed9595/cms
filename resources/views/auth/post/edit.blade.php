@@ -69,6 +69,11 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label for="tags">Tags</label>
+                                    <input type="text" name="tags" id="tags" class="form-control"
+                                        placeholder="e.g. laravel,php,backend" value="{{ $post->tags }}">
+                                </div>
+                                <div class="form-group">
                                     <label for="gallery_id">File upload</label>
                                     @if (isset($post->gallery) && $post->gallery->image)
                                         <div class="mb-2">

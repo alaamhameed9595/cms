@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\Request\CreateRequest;
 use App\Models\gallery;
 use App\Models\Post;
+use App\Models\Tag;
 use Cloudinary\Api\Upload\UploadApi;
 use Cloudinary\Configuration\Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ConditionalRules;
 
 class PostController extends Controller
@@ -17,12 +19,22 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($tag = null)
     {
         //dd(config('cloudinary.cloudinary_url'));
+        // If a tag is provided, filter posts by that tag
 
+        if ($tag) {
+            $posts = Post::with('category')
+                ->whereHas('tags', function ($query) use ($tag) {
+                    $query->where('id', $tag);
+                })->paginate();
+        } else {
+            // Otherwise, get all posts
+            $posts = Post::with('category')->paginate();
+        }
         return view('auth.post.index')->with([
-            'posts' => $posts = Post::with('category')->get(),
+            'posts' => $posts,
         ]);
     }
 
@@ -47,7 +59,9 @@ class PostController extends Controller
 
 
         $post = new Post();
+
         $post->title = $request->input('title');
+        $post->slug = Str::slug($post->title);
         $post->description = $request->input('description');
         if ($request->hasFile('file')) {
             if (!$request->file('file')->isValid()) {
@@ -67,9 +81,24 @@ class PostController extends Controller
         $post->category_id = $request->input('category_id');
         $post->is_published = $request->input('is_published', false);
         $post->save();
+        $this->syncTags($post, $request->input('tags'));
         return redirect()->route('auth.posts')->with(['success', 'Post created successfully!']);
     }
+    private function syncTags(Post $post, $tagsInput)
+    {
+        $tags = collect(explode(',', $tagsInput))
+            ->map(fn($tag) => trim($tag))
+            ->filter()
+            ->map(function ($tagName) {
+                $slug = Str::slug($tagName);
+                return Tag::firstOrCreate(
+                    ['slug' => $slug],
+                    ['name' => $tagName]
+                )->id;
+            });
 
+        $post->tags()->sync($tags);
+    }
     /**
      * Display the specified resource.
      */
@@ -126,11 +155,14 @@ class PostController extends Controller
             $gallery->save();
             $post->gallery_id = $gallery->id;
         }
+        $title = $request->input('title') ?? $post->title;
         $post->title = $request->input('title') ?? $post->title;
+        $post->slug = Str::slug($title);
         $post->description = $request->input('description') ??  $post->description;
         $post->category_id = $request->input('category_id') ?? $post->category_id;
         $post->is_published = $request->input('is_published') ?? $post->is_published;
         $post->save();
+        $this->syncTags($post, $request->input('tags'));
         return redirect()->route('auth.posts')->with('success', 'Post updated successfully!');
     }
     /**

@@ -258,16 +258,46 @@
                     </li>
 
                     <!--  --  end categories section -->
+                    @haspermission('create tags')
+                        <!--  -- tag section -->
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic2" aria-expanded="true"
+                                aria-controls="ui-basic2">
+                                <span class="menu-title">Tags</span>
+                                <i class="menu-arrow"></i>
+                                <i class="mdi mdi-tag-multiple menu-icon"></i>
+                            </a>
+                            <div class="collapse" id="ui-basic2">
+                                <ul class="nav flex-column sub-menu">
+                                    @haspermission('create tags')
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('auth.tag.create') }}">Create Tag
+                                                <i class="mdi mdi-plus-box menu-icon"></i>
+                                            </a>
+                                        </li>
+                                    @endhaspermission
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('auth.tags') }}">All Tags
+                                            <i class="mdi mdi-format-list-bulleted menu-icon"></i>
 
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </li>
+
+                        <!--  --  end tag section -->
+                    @endhaspermission
                     <!--  -- posts section -->
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="true"
-                            aria-controls="ui-basic">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic1" aria-expanded="true"
+                            aria-controls="ui-basic1">
                             <span class="menu-title">Posts</span>
                             <i class="menu-arrow"></i>
                             <i class="mdi mdi-post-outline menu-icon"></i>
                         </a>
-                        <div class="collapse" id="ui-basic">
+                        <div class="collapse" id="ui-basic1">
                             <ul class="nav flex-column sub-menu">
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('auth.post.create') }}">Create Post
@@ -331,6 +361,7 @@
                             </div>
                         </li>
                     @endhaspermission
+
                 </ul>
             </nav>
 

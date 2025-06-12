@@ -1,4 +1,10 @@
 @extends('layouts.website')
+@section('head')
+    {!! SEOMeta::generate() !!}
+    {!! OpenGraph::generate() !!}
+    {!! Twitter::generate() !!}
+    {!! JsonLd::generate() !!}
+@endsection
 @section('content')
     <section class="page-title bg-2">
         <div class="container">
@@ -29,17 +35,29 @@
                                     <span class="text-secondary small">{{ $post->created_at->diffForHumans() }}</span>
                                 </li>
                                 <li class="list-inline-item align-middle">
-                                    <a href="{{ route('website.category', $post->category_id) }}"
-                                        class="text-decoration-none">
-                                        <i class="ion-pricetags text-success"></i>
+                                    <a href="{{ route('website.home', $post->category_id) }}" class="text-decoration-none">
+                                        <i class="ion-folder text-warning"></i>
                                         <span class="text-secondary small">{{ $post->category->name }}</span>
                                     </a>
+                                </li>
+                                @if ($post->tags && $post->tags->count() > 0)
+                                    <li class="list-inline-item align-middle">
+                                        <div>
+                                            <i class="ion-pricetags text-info"></i>
+                                            @foreach ($post->tags as $tag)
+                                                <a href="{{ route('tags.show', $tag->slug) }}"
+                                                    class="badge badge-primary mx-1">
+                                                    #{{ $tag->name }}
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                @endif
                                 </li>
                             </ul>
                         </div>
                         <div class="post-thumb mb-4">
                             <img class="img-fluid rounded shadow-sm" style="max-height:400px;object-fit:cover;"
-                                src="{{ $post->getImageUrlAttribute() }}" alt="">
+                                src="{{ $post->getImageUrlAttribute() }}" alt="{{ $post->slug }}">
                         </div>
                         <div class="post-content post-excerpt mb-4">
                             <p class="lead">{!! $post->description !!}</p>
@@ -60,7 +78,6 @@
                             @else
                                 <h3 class="post-sub-heading">No Comments Yet</h3>
                                 <p>Be the first to comment on this post!</p>
-                                @endelse
                             @endif
                         </div>
                         <div class="post-comments-form mt-5">

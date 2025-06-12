@@ -92,6 +92,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                {{ $posts->links() }}
                             @else
                                 <h4 class="card-title">No Posts Found</h4>
                             @endif

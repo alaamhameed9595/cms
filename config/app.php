@@ -58,7 +58,7 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL'),
-
+    'admin_email' => env('ADMIN_EMAIL', 'admin@admin.admin'),
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -186,6 +186,12 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
         'Cloudinary' => CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary::class,
+        'SEOMeta'   => Artesaos\SEOTools\Facades\SEOMeta::class,
+        'OpenGraph' => Artesaos\SEOTools\Facades\OpenGraph::class,
+        'Twitter'   => Artesaos\SEOTools\Facades\TwitterCard::class,
+        'JsonLd'    => Artesaos\SEOTools\Facades\JsonLd::class,
+        'SEO'       => Artesaos\SEOTools\Facades\SEOTools::class,
+
     ])->toArray(),
 
 ];

@@ -68,6 +68,11 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <label for="tags">Tags</label>
+                                    <input type="text" name="tags" id="tags" class="form-control"
+                                        placeholder="e.g. laravel,php,backend">
+                                </div>
+                                <div class="form-group">
                                     <label for="gallery_id">File upload</label>
                                     <input type="file" name="file" id="gallery_id" class="form-control">
                                 </div>

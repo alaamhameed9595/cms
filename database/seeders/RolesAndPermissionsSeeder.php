@@ -32,6 +32,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'edit pages',
             'delete pages',
             'manage users',
+            'create tags',
+            'edit tags',
+            'delete tags',
         ];
 
         foreach ($permissions as $permission) {
@@ -54,11 +57,14 @@ class RolesAndPermissionsSeeder extends Seeder
             'unpublish posts',
             'create pages',
             'edit pages',
+            'create tags',
+            'edit tags'
         ]);
 
         $author->givePermissionTo([
             'create posts',
             'edit posts',
+            'create tags',
         ]);
         // Assign roles to the default user
         $user = \App\Models\User::where('name', 'admin')->first();

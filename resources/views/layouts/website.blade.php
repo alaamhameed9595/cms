@@ -8,6 +8,7 @@
   ================================================== -->
     <meta charset="utf-8">
     <title>Airspace | Your CMS </title>
+    @yield('head')
 
     <!-- Mobile Specific Metas
   ================================================== -->

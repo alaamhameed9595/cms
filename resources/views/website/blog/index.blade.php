@@ -25,27 +25,28 @@
                         @foreach ($posts as $post)
                             <div class="post">
                                 <div class="post-thumb">
-                                    <a href="{{ route('website.post.show', $post->id) }}">
-                                        <img class="img-fluid" src="{{ $post->getImageUrlAttribute() }}" alt="">
+                                    <a href="{{ route('website.post.show', $post) }}">
+                                        <img class="img-fluid" src="{{ $post->getImageUrlAttribute() }}"
+                                            alt="{{ $post->slug }}">
                                     </a>
                                 </div>
                                 <h3 class="post-title"><a
-                                        href="{{ route('website.post.show', $post->id) }}">{{ $post->title }}</a></h3>
+                                        href="{{ route('website.post.show', $post) }}">{{ $post->title }}</a></h3>
                                 <div class="post-meta">
                                     <ul>
                                         <li>
                                             <i class="ion-calendar"></i>{{ $post->created_at->format('d, M Y') }}
                                         </li>
                                         <li>
-                                            <a href="{{ route('website.category', $post->category_id) }}"><i
-                                                    class="ion-pricetags"></i>
+                                            <a href="{{ route('website.home', $post->category_id) }}"><i
+                                                    class="ion-folder text-warning"></i>
                                                 {{ $post->category->name }}</a>
                                         </li>
 
                                     </ul>
                                 </div>
                                 <div class="post-content">
-                                    <p>{!! Str::limit($post->description, 15) !!}</p> <a href="{{ route('website.post.show', $post->id) }}"
+                                    <p>{!! Str::limit($post->description, 15) !!}</p> <a href="{{ route('website.post.show', $post) }}"
                                         class="btn btn-main">Read More</a>
                                 </div>
                             </div>
@@ -66,9 +67,9 @@
                                 @if (isset($latestPosts) && $latestPosts->count() > 0)
                                     @foreach ($latestPosts as $post)
                                         <div class="media">
-                                            <a class="pull-left" href="{{ route('website.post.show', $post->id) }}">
+                                            <a class="pull-left" href="{{ route('website.post.show', $post) }}">
                                                 <img class="media-object" src="{{ $post->getImageUrlAttribute() }}"
-                                                    alt="Image">
+                                                    alt="{{ $post->slug }}">
                                             </a>
                                             <div class="media-body">
                                                 <h4 class="media-heading"><a
@@ -93,7 +94,7 @@
                                     <ul class="widget-category-list">
                                         @foreach ($categories as $category)
                                             <li><a
-                                                    href="{{ route('website.category', $category->id) }}">{{ $category->name }}</a>
+                                                    href="{{ route('website.home', $category->id) }}">{{ $category->name }}</a>
                                             </li>
                                         @endforeach
 
@@ -103,9 +104,23 @@
                                 @endif
                             </div> <!-- End category  -->
 
-
-
-
+                            <!-- Widget Search -->
+                            <div class="widget widget-search">
+                                <h4 class="widget-title">Search</h4>
+                                <form method="GET" action="{{ route('website.home') }}" class="mb-4">
+                                    <div class="input-group">
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="Search posts..." value="{{ request('search') }}">
+                                        <button class="btn btn-primary" type="submit">Search</button>
+                                    </div>
+                                </form>
+                                @if (isset($query) && $query)
+                                    <div class="mb-3">
+                                        <span class="badge bg-info text-dark">Search: "{{ $query }}"</span>
+                                    </div>
+                                @endif
+                            </div>
+                            <!-- End Search Widget -->
 
                         </aside>
                     </div>
@@ -113,7 +128,6 @@
 
 
             </div>
-
 
             <nav aria-label="Page navigation example">
                 {{ $posts->links() }}
